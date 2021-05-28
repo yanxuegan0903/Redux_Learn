@@ -19,13 +19,13 @@ function onPopularPageRefresh(tabLabelName, url) {
     dataStore.fetchData(url)
       .then((data) => {
         dispatch({
-          type: Types.LOAD_POPULAR_SUCCESS,
+          type: Types.POPULAR_REFRESH_SUCCESS,
           items: data && data.data && data.data.items,
           tabLabelName: tabLabelName,
         });
       })
       .catch((error) => {
-        dispatch({ type: Types.LOAD_POPULAR_FAIL, items: null, tabLabelName: tabLabelName });
+        dispatch({ type: Types.POPULAR_REFRESH_FAIL, items: null, tabLabelName: tabLabelName });
       });
   };
 }

@@ -36,7 +36,7 @@ function onPopularRefreshStateChange(state=defaultPopularState,action){
         }
       }
     }
-    case Types.LOAD_POPULAR_FAIL:{
+    case Types.POPULAR_REFRESH_FAIL:{
       return {
         ...state,
         [action.tabLabelName]:{
@@ -46,7 +46,7 @@ function onPopularRefreshStateChange(state=defaultPopularState,action){
         }
       }
     }
-    case Types.LOAD_POPULAR_SUCCESS:{
+    case Types.POPULAR_REFRESH_SUCCESS:{
       return {
         ...state,
         [action.tabLabelName]:{
