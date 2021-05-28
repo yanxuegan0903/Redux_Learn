@@ -2,13 +2,37 @@ import React,{Component} from "react";
 import {createStackNavigator} from 'react-navigation-stack'
 import {createAppContainer} from "react-navigation";
 import { BottomTabBar, createBottomTabNavigator } from "react-navigation-tabs";
-import Page1 from "./Page1";
-import Page2 from "./Page2";
+import PopularPage from "./PopularPage";
+import TrendingPage from "./TrendingPage";
+import MyPage from "./MyPage";
+import FavoritePage from "./FavoritePage";
 
 
 const BottomNavi = createAppContainer(createBottomTabNavigator({
-  page1:Page1,
-  page2:Page2
+  PopularPage:{
+    screen:PopularPage,
+    navigationOptions:{
+      title:'最热'
+    }
+  },
+  TrendingPage:{
+    screen:TrendingPage,
+    navigationOptions:{
+      title:'趋势'
+    }
+  },
+  FavoritePage:{
+    screen:FavoritePage,
+    navigationOptions:{
+      title:'收藏'
+    }
+  },
+  MyPage:{
+    screen:MyPage,
+    navigationOptions:{
+      title:'我的'
+    }
+  }
 },{
   tabBarOptions:{
     activeTintColor:'red'
@@ -20,5 +44,10 @@ const BottomNavi = createAppContainer(createBottomTabNavigator({
 
 
 export const AppNavi = createAppContainer(createStackNavigator({
-  BottomNavi:BottomNavi
+  BottomNavi:{
+    screen:BottomNavi,
+    navigationOptions:{
+      header:null
+    }
+  },
 }))

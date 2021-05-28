@@ -2,7 +2,9 @@ import {combineReducers} from "redux";
 import Types from '../action/types'
 
 const defaultText = 'defauleText'
+const defaultPopularState = {
 
+}
 function changeText(state = defaultText,action){
   switch (action.type){
     case Types.Change_Page1_text:{
@@ -22,10 +24,47 @@ function changeText(state = defaultText,action){
   }
 }
 
-
+function onPopularRefreshStateChange(state=defaultPopularState,action){
+  switch (action.type){
+    case Types.POPULAR_REFRESH:{
+      return {
+        ...state,
+        [action.tabLabelName]:{
+          ...state[action.tabLabelName],
+          items:action.items,
+          isLoading:true
+        }
+      }
+    }
+    case Types.LOAD_POPULAR_FAIL:{
+      return {
+        ...state,
+        [action.tabLabelName]:{
+          ...state[action.tabLabelName],
+          items:action.items,
+          isLoading:false
+        }
+      }
+    }
+    case Types.LOAD_POPULAR_SUCCESS:{
+      return {
+        ...state,
+        [action.tabLabelName]:{
+          ...state[action.tabLabelName],
+          items:action.items,
+          isLoading:false
+        }
+      }
+    }
+    default:{
+      return state
+    }
+  }
+}
 
 const reducers = combineReducers({
-  changeText
+  changeText:changeText,
+  onPopularRefreshStateChange:onPopularRefreshStateChange
 })
 
 //  导出reducers

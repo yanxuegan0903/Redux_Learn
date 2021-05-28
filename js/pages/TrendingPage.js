@@ -2,7 +2,7 @@ import React  from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { connect } from "react-redux";
 
-class Page2 extends React.Component {
+class TrendingPage extends React.Component {
 
   render(){
     return (
@@ -31,4 +31,4 @@ const mapStateToProps = state=>({
   text:state.changeText.text
 })
 
-export default connect(mapStateToProps)(Page2)
+export default connect(mapStateToProps)(TrendingPage)
