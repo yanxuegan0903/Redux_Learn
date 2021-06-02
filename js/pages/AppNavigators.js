@@ -6,6 +6,8 @@ import PopularPage from "./PopularPage";
 import TrendingPage from "./TrendingPage";
 import MyPage from "./MyPage";
 import FavoritePage from "./FavoritePage";
+import NotiMessageCenterPage from "./NotiMessageCenterPage";
+import RemoteDecryptPage from "./RemoteDecryptPage";
 
 
 const BottomNavi = createAppContainer(createBottomTabNavigator({
@@ -50,4 +52,6 @@ export const AppNavi = createAppContainer(createStackNavigator({
       header:null
     }
   },
+  NotiMessageCenterPage:NotiMessageCenterPage,
+  RemoteDecryptPage:RemoteDecryptPage
 }))

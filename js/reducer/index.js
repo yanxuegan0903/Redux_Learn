@@ -62,9 +62,98 @@ function onPopularRefreshStateChange(state=defaultPopularState,action){
   }
 }
 
+
+
+function onNotiMessageLoad(state={},action){
+  switch (action.type){
+    case Types.NOTIMESSAGE_REFRESH:{
+      return {
+        ...state,
+        response:{
+          ...state['response'],
+          items:action.items,
+          isLoading:true,
+          hideLoadingMore:true,
+          currentIndex:action.currentIndex
+        }
+      }
+    }
+    case Types.NOTIMESSAGE_REFRESH_SUCCESS:{
+      return {
+        ...state,
+        response:{
+          ...state['response'],
+          items:action.items,
+          isLoading:false,
+          hideLoadingMore:false,
+          currentIndex:action.currentIndex
+        }
+
+      }
+    }
+    case Types.NOTIMESSAGE_REFRESH_FAIL:{
+      return {
+        ...state,
+        response:{
+          ...state['response'],
+          items:action.items,
+          isLoading:false,
+          hideLoadingMore:true,
+          currentIndex:action.currentIndex
+        }
+      }
+    }
+    case Types.NOTIMESSAGE_LOADMORE: {
+      return {
+        ...state,
+        response: {
+          ...state['response'],
+          items: action.items,
+          isLoading: false,
+          hideLoadingMore: false,
+          currentIndex:action.currentIndex
+        }
+      }
+    }
+    case Types.NOTIMESSAGE_LOADMORE_SUCCESS:{
+      return {
+        ...state,
+        response:{
+          ...state['response'],
+          items:action.items,
+          isLoading:false,
+          hideLoadingMore:false,
+          currentIndex:action.currentIndex
+        }
+      }
+    }
+    case Types.NOTIMESSAGE_LOADMORE_FAIL:{
+      return {
+        ...state,
+        response:{
+          ...state['response'],
+          items:action.items,
+          isLoading:false,
+          hideLoadingMore:true,
+          currentIndex:action.currentIndex
+        }
+      }
+    }
+
+    default :{
+      return state
+    }
+  }
+
+
+}
+
+
+
 const reducers = combineReducers({
   changeText:changeText,
-  onPopularRefreshStateChange:onPopularRefreshStateChange
+  onPopularRefreshStateChange:onPopularRefreshStateChange,
+  onNotiMessageLoad:onNotiMessageLoad
 })
 
 //  导出reducers
