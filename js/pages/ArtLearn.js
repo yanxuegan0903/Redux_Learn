@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Dimensions, FlatList,
-  Modal,
+  Modal, NativeScrollPoint,
   PanResponder,
   SafeAreaView, ScrollView, Slider, Text,
   TouchableOpacity, TouchableWithoutFeedback,
@@ -35,8 +35,9 @@ export default class ArtLearn extends React.Component {
 
     this.mousePosition = [];
     this.cancelPositions = [];
-
-
+    this.contentOffsetX = 0
+    this.contentOffsetY = 0
+    this.zoomScale = 1
     this.panGesture = PanResponder.create({
       onStartShouldSetPanResponder: (event, gestureState) => {
         if (event.nativeEvent.touches.length === 1) {
@@ -49,14 +50,29 @@ export default class ArtLearn extends React.Component {
         }
       },
       onPanResponderGrant: (event, gestureState) => {
-        console.log(`onPanResponderGrant panGesture touches:${event.nativeEvent.touches.length}`);
+        console.log(`onPanResponderGrant panGesture gestureState.x0:${event.nativeEvent.touches.length}`);
         if (event.nativeEvent.touches.length === 1) {
-          this.tempStartX = gestureState.x0;
-          this.tempStartY = gestureState.y0;
+          this.tempStartX = (gestureState.x0+this.contentOffsetX)/this.zoomScale;
+          this.tempStartY = (gestureState.y0+this.contentOffsetY)/this.zoomScale;
+          console.log(`x0:${this.tempStartX},y0:${this.tempStartY}`)
         }
 
       },
+      onPanResponderStart: (event, gestureState) => {
+        console.log("onPanResponderMove panGesture");
+        if (event.nativeEvent.touches.length === 1) {
 
+          this.mousePosition = {
+            tempStartX: this.tempStartX,
+            tempStartY: this.tempStartY,
+            x: this.tempStartX + gestureState.dx/this.zoomScale,
+            y: this.tempStartY + gestureState.dy/this.zoomScale,
+          };
+
+          this.mousePositions.push(this.mousePosition);
+          this.setState({ ...this.state });
+        }
+      },
       onPanResponderMove: (event, gestureState) => {
         console.log("onPanResponderMove panGesture");
         if (event.nativeEvent.touches.length === 1) {
@@ -64,8 +80,8 @@ export default class ArtLearn extends React.Component {
           this.mousePosition = {
             tempStartX: this.tempStartX,
             tempStartY: this.tempStartY,
-            x: this.tempStartX + gestureState.dx,
-            y: this.tempStartY + gestureState.dy,
+            x: this.tempStartX + gestureState.dx/this.zoomScale,
+            y: this.tempStartY + gestureState.dy/this.zoomScale,
           };
 
           this.mousePositions.push(this.mousePosition);
@@ -80,8 +96,8 @@ export default class ArtLearn extends React.Component {
           this.mousePosition = {
             tempStartX: this.tempStartX,
             tempStartY: this.tempStartY,
-            x: this.tempStartX + gestureState.dx,
-            y: this.tempStartY + gestureState.dy,
+            x: this.tempStartX + gestureState.dx/this.zoomScale,
+            y: this.tempStartY + gestureState.dy/this.zoomScale,
           };
 
           this.mousePositions.push(this.mousePosition);
@@ -94,6 +110,8 @@ export default class ArtLearn extends React.Component {
     });
 
   }
+
+
 
   clickBackStep() {
 
@@ -233,13 +251,38 @@ export default class ArtLearn extends React.Component {
     return <View style={{ flex: 1 }}>
       <ScrollView
         minimumZoomScale={1}
-        maximumZoomScale={3}
+        maximumZoomScale={10}
         bounces={false}
         bouncesZoom={false}
         scrollEnabled={this.scrollEnable}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ flex: 1 }}
+        onScrollBeginDrag={(event)=>{
+          this.contentOffsetX = event.nativeEvent.contentOffset.x
+          this.contentOffsetY = event.nativeEvent.contentOffset.y
+          this.zoomScale = event.nativeEvent.contentSize.width/width
+        }}
+        onScroll={(event)=>{
+          this.contentOffsetX = event.nativeEvent.contentOffset.x
+          this.contentOffsetY = event.nativeEvent.contentOffset.y
+          this.zoomScale = event.nativeEvent.contentSize.width/width
+        }}
+        onScrollEndDrag={(event)=>{
+          this.contentOffsetX = event.nativeEvent.contentOffset.x
+          this.contentOffsetY = event.nativeEvent.contentOffset.y
+          this.zoomScale = event.nativeEvent.contentSize.width/width
+        }}
+        onMomentumScrollBegin={(event)=>{
+          this.contentOffsetX = event.nativeEvent.contentOffset.x
+          this.contentOffsetY = event.nativeEvent.contentOffset.y
+          this.zoomScale = event.nativeEvent.contentSize.width/width
+        }}
+        onMomentumScrollEnd={(event)=>{
+          this.contentOffsetX = event.nativeEvent.contentOffset.x
+          this.contentOffsetY = event.nativeEvent.contentOffset.y
+          this.zoomScale = event.nativeEvent.contentSize.width/width
+        }}
       >
         <View style={{
           flex: 1,
