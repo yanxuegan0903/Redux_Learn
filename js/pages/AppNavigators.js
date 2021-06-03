@@ -8,6 +8,8 @@ import MyPage from "./MyPage";
 import FavoritePage from "./FavoritePage";
 import NotiMessageCenterPage from "./NotiMessageCenterPage";
 import RemoteDecryptPage from "./RemoteDecryptPage";
+import PanGestureLearn from "./PanGestureLearn";
+import ArtLearn from "./ArtLearn";
 
 
 const BottomNavi = createAppContainer(createBottomTabNavigator({
@@ -53,5 +55,12 @@ export const AppNavi = createAppContainer(createStackNavigator({
     }
   },
   NotiMessageCenterPage:NotiMessageCenterPage,
-  RemoteDecryptPage:RemoteDecryptPage
+  RemoteDecryptPage:RemoteDecryptPage,
+  PanGestureLearn:PanGestureLearn,
+  ArtLearn:{
+    screen:ArtLearn,
+    navigationOptions:{
+      header:null
+    }
+  },
 }))

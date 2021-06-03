@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   TouchableWithoutFeedback,
-  Dimensions, Keyboard, Alert,
+  Dimensions, Keyboard, Alert, KeyboardAvoidingView,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -24,7 +24,7 @@ export default class RemoteDescryptModalView extends React.Component {
   }
 
   selectAction(index, text) {
-    console.log(`index:${index},text:${text}`)
+    console.log(`index:${index},text:${text}`);
     this.setState({
       selectIndex: index,
       text: text,
@@ -43,70 +43,79 @@ export default class RemoteDescryptModalView extends React.Component {
       style={styles.modalStyle}
     >
       <View style={styles.contentStyle}>
-        <TouchableWithoutFeedback onPress={() => {
-          clickCancel();
-        }}>
-          <View style={{ position: "absolute", width, height, top: 0, left: 0, backgroundColor: "rgba(0,0,0,.5)" }} />
-        </TouchableWithoutFeedback>
-        <View style={styles.hitViewStyle}>
-          <View style={{ alignItems: "center" }}>
-            <Text style={styles.headerTextStyle}>微信</Text>
-          </View>
-          <View style={{ padding: 10 }}>
-            <Text>临时解密时间设置</Text>
-            <Text style={{ marginTop: 10 }}>从现在起xx分钟之内可以自由使用该应用，最多120分钟</Text>
-          </View>
-          <View style={{ flexWrap: "wrap", marginLeft: 10, marginRight: 10, flexDirection: "row" ,justifyContent:'space-between'}}>
-            <MinutesCell index={0} textLabel={"30"} selectIndex={this.state.selectIndex}
-                         selectAction={this.selectAction.bind(this)} />
-            <MinutesCell index={1} textLabel={"60"} selectIndex={this.state.selectIndex}
-                         selectAction={this.selectAction.bind(this)} />
-            <MinutesCell index={2} textLabel={"90"} selectIndex={this.state.selectIndex}
-                         selectAction={this.selectAction.bind(this)} />
-            <MinutesCell index={3} textLabel={"120"} selectIndex={this.state.selectIndex}
-                         selectAction={this.selectAction.bind(this)} />
-            <MinutesInputCell index={4} textLabel={"120"} selectIndex={this.state.selectIndex}
-                              selectAction={this.selectAction.bind(this)} />
+        {/*<KeyboardAvoidingView behavior={"padding"} enabled={true}>*/}
 
-          </View>
-          <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 20, marginTop: 20 }}>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 30,
-                borderWidth: 1,
-                borderColor: "#333333",
-                borderRadius: 4,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={() => {
-                clickCancel();
-              }}>
-              <Text>取消</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 30,
-                borderWidth: 1,
-                borderColor: "#333333",
-                borderRadius: 4,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={() => {
+          <TouchableWithoutFeedback onPress={() => {
+            clickCancel();
+          }}>
+            <View style={{ position: "absolute", width, height, top: 0, left: 0, backgroundColor: "rgba(0,0,0,.5)" }} />
+          </TouchableWithoutFeedback>
+          <View style={styles.hitViewStyle}>
+            <View style={{ alignItems: "center" }}>
+              <Text style={styles.headerTextStyle}>微信</Text>
+            </View>
+            <View style={{ padding: 10 }}>
+              <Text>临时解密时间设置</Text>
+              <Text style={{ marginTop: 10 }}>从现在起xx分钟之内可以自由使用该应用，最多120分钟</Text>
+            </View>
+            <View style={{
+              flexWrap: "wrap",
+              marginLeft: 10,
+              marginRight: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}>
+              <MinutesCell index={0} textLabel={"30"} selectIndex={this.state.selectIndex}
+                           selectAction={this.selectAction.bind(this)} />
+              <MinutesCell index={1} textLabel={"60"} selectIndex={this.state.selectIndex}
+                           selectAction={this.selectAction.bind(this)} />
+              <MinutesCell index={2} textLabel={"90"} selectIndex={this.state.selectIndex}
+                           selectAction={this.selectAction.bind(this)} />
+              <MinutesCell index={3} textLabel={"120"} selectIndex={this.state.selectIndex}
+                           selectAction={this.selectAction.bind(this)} />
+              <MinutesInputCell index={4} textLabel={"120"} selectIndex={this.state.selectIndex}
+                                selectAction={this.selectAction.bind(this)} />
 
-                if (parseInt(this.state.text,10) > 120){
-                  Alert.alert('提示','数值必须小于等于120')
-                }else {
-                  clickConfirm(this.state.text);
-                }
-              }}>
-              <Text>确定</Text>
-            </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 20, marginTop: 20 }}>
+              <TouchableOpacity
+                style={{
+                  width: 100,
+                  height: 30,
+                  borderWidth: 1,
+                  borderColor: "#333333",
+                  borderRadius: 4,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+                  clickCancel();
+                }}>
+                <Text>取消</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: 100,
+                  height: 30,
+                  borderWidth: 1,
+                  borderColor: "#333333",
+                  borderRadius: 4,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+
+                  if (parseInt(this.state.text, 10) > 120) {
+                    Alert.alert("提示", "数值必须小于等于120");
+                  } else {
+                    clickConfirm(this.state.text);
+                  }
+                }}>
+                <Text>确定</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        {/*</KeyboardAvoidingView>*/}
       </View>
     </Modal>;
   }
@@ -177,9 +186,9 @@ class MinutesInputCell extends React.Component {
 
   componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS) {
     const { index, selectIndex, selectAction } = this.props;
-    if (index === selectIndex){
-    }else {
-      Keyboard.dismiss()
+    if (index === selectIndex) {
+    } else {
+      Keyboard.dismiss();
     }
   }
 
@@ -195,7 +204,7 @@ class MinutesInputCell extends React.Component {
         onFocus={() => {
           selectAction(index, this.text);
         }}
-        onEndEditing={()=>{
+        onEndEditing={() => {
         }}
         style={{
           borderWidth: 1,

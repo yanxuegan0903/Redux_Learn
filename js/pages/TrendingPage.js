@@ -1,6 +1,8 @@
 import React  from "react";
 import { View, StyleSheet, Text, Button } from "react-native";
 import { connect } from "react-redux";
+import PanGestureLearn from "./PanGestureLearn";
+import ArtLearn from "./ArtLearn";
 
 class TrendingPage extends React.Component {
 
@@ -19,6 +21,12 @@ class TrendingPage extends React.Component {
         }}/>
         <Button title={'go NotiMessageCenterPage'} onPress={()=>{
           navigation.navigate('NotiMessageCenterPage')
+        }}/>
+        <Button title={'go PanGestureLearn'} onPress={()=>{
+          navigation.navigate('PanGestureLearn')
+        }}/>
+        <Button title={'go ArtLearn'} onPress={()=>{
+          navigation.navigate('ArtLearn')
         }}/>
       </View>
     )
