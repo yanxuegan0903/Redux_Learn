@@ -3,7 +3,7 @@ import {
   Dimensions, FlatList,
   Modal,
   PanResponder,
-  SafeAreaView, Slider, Text,
+  SafeAreaView, ScrollView, Slider, Text,
   TouchableOpacity, TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -27,35 +27,70 @@ export default class ArtLearn extends React.Component {
       strokeColor: "#000000",
       strokeWidthVisiable: false,
       strokeWidth: 3,
-      surfaceColorsVisiable:false,
-      surfaceColor:'white',
+      surfaceColorsVisiable: false,
+      surfaceColor: "white",
+      pointerEvents: "box-none",
     };
-
+    this.scrollEnable = true
 
     this.mousePosition = [];
     this.cancelPositions = [];
 
 
     this.panGesture = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onStartShouldSetPanResponderCapture: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponderCapture: () => true,
-      onPanResponderGrant: (event, gestureState) => {
-        this.tempStartX = gestureState.x0;
-        this.tempStartY = gestureState.y0;
-      },
-      onPanResponderMove: (event, gestureState) => {
-        this.mousePosition = {
-          tempStartX: this.tempStartX,
-          tempStartY: this.tempStartY,
-          x: this.tempStartX + gestureState.dx,
-          y: this.tempStartY + gestureState.dy,
-        };
+      onStartShouldSetPanResponder: (event, gestureState) => {
+        if (event.nativeEvent.touches.length === 1) {
+          this.scrollEnable = false
+          return true;
+        } else {
+          this.scrollEnable = true
 
-        this.mousePositions.push(this.mousePosition);
-        this.setState({ ...this.state });
+          return false;
+        }
       },
+      onPanResponderGrant: (event, gestureState) => {
+        console.log(`onPanResponderGrant panGesture touches:${event.nativeEvent.touches.length}`);
+        if (event.nativeEvent.touches.length === 1) {
+          this.tempStartX = gestureState.x0;
+          this.tempStartY = gestureState.y0;
+        }
+
+      },
+
+      onPanResponderMove: (event, gestureState) => {
+        console.log("onPanResponderMove panGesture");
+        if (event.nativeEvent.touches.length === 1) {
+
+          this.mousePosition = {
+            tempStartX: this.tempStartX,
+            tempStartY: this.tempStartY,
+            x: this.tempStartX + gestureState.dx,
+            y: this.tempStartY + gestureState.dy,
+          };
+
+          this.mousePositions.push(this.mousePosition);
+          this.setState({ ...this.state });
+        }
+      },
+
+
+      onPanResponderRelease: (event, gestureState) => {
+        console.log(`onPanResponderRelease panGesture`);
+        if (event.nativeEvent.touches.length === 1) {
+          this.mousePosition = {
+            tempStartX: this.tempStartX,
+            tempStartY: this.tempStartY,
+            x: this.tempStartX + gestureState.dx,
+            y: this.tempStartY + gestureState.dy,
+          };
+
+          this.mousePositions.push(this.mousePosition);
+          this.setState({ ...this.state });
+        }
+      },
+
+      onPanResponderTerminationRequest: () => false,
+
     });
 
   }
@@ -134,7 +169,7 @@ export default class ArtLearn extends React.Component {
     });
   }
 
-  clickStrokeWidth(){
+  clickStrokeWidth() {
     this.setState({
       ...this.state,
       strokeWidthVisiable: !this.state.strokeWidthVisiable,
@@ -165,7 +200,7 @@ export default class ArtLearn extends React.Component {
     });
   }
 
-  onDismissStrokeWidth(){
+  onDismissStrokeWidth() {
     this.setState({
       ...this.state,
       strokeWidthVisiable: !this.state.strokeWidthVisiable,
@@ -174,7 +209,7 @@ export default class ArtLearn extends React.Component {
 
   render() {
 
-    const btncount = 5
+    const btncount = 5;
     let path = Path();
     if (!this.mousePositions) this.mousePositions = [];
 
@@ -196,18 +231,29 @@ export default class ArtLearn extends React.Component {
     });
 
     return <View style={{ flex: 1 }}>
-      <View style={{
-        flex: 1,
-        backgroundColor: "grey",
-        alignItems: "center",
-        justifyContent: "center",
-      }} {...this.panGesture.panHandlers}>
-        <Surface style={{ backgroundColor: this.state.surfaceColor }} width={width} height={height}>
-          <Group>
-            <Shape d={path} stroke={this.state.strokeColor} strokeWidth={this.state.strokeWidth} />
-          </Group>
-        </Surface>
-      </View>
+      <ScrollView
+        minimumZoomScale={1}
+        maximumZoomScale={3}
+        bounces={false}
+        bouncesZoom={false}
+        scrollEnabled={this.scrollEnable}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ flex: 1 }}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: "grey",
+          alignItems: "center",
+          justifyContent: "center",
+        }} pointerEvents={this.state.pointerEvents} {...this.panGesture.panHandlers}>
+          <Surface style={{ backgroundColor: this.state.surfaceColor }} width={width} height={height}>
+            <Group>
+              <Shape d={path} stroke={this.state.strokeColor} strokeWidth={this.state.strokeWidth} />
+            </Group>
+          </Surface>
+        </View>
+      </ScrollView>
       <View
         style={{ position: "absolute", bottom: 50, left: 20, flex: 1 }}>
         <TouchableOpacity onPress={() => {
@@ -246,7 +292,7 @@ export default class ArtLearn extends React.Component {
         </TouchableOpacity>
       </View>
       <View
-        style={{ position: "absolute", bottom: 50, left: (width - 40) / (btncount-1), flex: 1 }}>
+        style={{ position: "absolute", bottom: 50, left: (width - 40) / (btncount - 1), flex: 1 }}>
         <TouchableOpacity onPress={() => {
           this.clickStrokeColors();
         }
@@ -258,7 +304,7 @@ export default class ArtLearn extends React.Component {
         </TouchableOpacity>
       </View>
       <View
-        style={{ position: "absolute", bottom: 50, left: (width - 40) / (btncount-1)*2, flex: 1 }}>
+        style={{ position: "absolute", bottom: 50, left: (width - 40) / (btncount - 1) * 2, flex: 1 }}>
         <TouchableOpacity onPress={() => {
           this.clickSurfaceColors();
         }
@@ -270,9 +316,9 @@ export default class ArtLearn extends React.Component {
         </TouchableOpacity>
       </View>
       <View
-        style={{ position: "absolute", bottom: 50, left: (width - 40) / (btncount-1)*3, flex: 1 }}>
+        style={{ position: "absolute", bottom: 50, left: (width - 40) / (btncount - 1) * 3, flex: 1 }}>
         <TouchableOpacity onPress={() => {
-          this.clickStrokeWidth()
+          this.clickStrokeWidth();
         }
         }>
           <FontAwesome
@@ -283,7 +329,8 @@ export default class ArtLearn extends React.Component {
       </View>
       <ColorsView visiable={this.state.strokeColorsVisiable} onSelectColor={this.onSelectStrokeColor.bind(this)} />
       <ColorsView visiable={this.state.surfaceColorsVisiable} onSelectColor={this.onSelectSurfaceColor.bind(this)} />
-      <WidthView visiable={this.state.strokeWidthVisiable} onSelectColor={this.onSelectStrokeWidth.bind(this)} currentWidth={this.state.strokeWidth} onDismissStrokeWidth={this.onDismissStrokeWidth.bind(this)}/>
+      <WidthView visiable={this.state.strokeWidthVisiable} onSelectColor={this.onSelectStrokeWidth.bind(this)}
+                 currentWidth={this.state.strokeWidth} onDismissStrokeWidth={this.onDismissStrokeWidth.bind(this)} />
     </View>;
 
   }
@@ -302,9 +349,9 @@ class ColorsView extends React.Component {
 
   render() {
     const { visiable, onSelectColor } = this.props;
-    const margin = 5
-    const row = 3
-    const cellWidth = Math.floor((width-(row+1)*margin) / row)
+    const margin = 5;
+    const row = 3;
+    const cellWidth = Math.floor((width - (row + 1) * margin) / row);
     return <Modal style={{ flex: 1 }}
                   transparent={true}
                   visible={visiable}
@@ -320,17 +367,28 @@ class ColorsView extends React.Component {
           renderItem={(data) => {
             return <View
               style={{ alignItems: "center", justifyContent: "center" }}>
-              <Text style={{ width:cellWidth , height:cellWidth, backgroundColor: data.item ,marginRight:margin/2.0,marginLeft:margin/2.0}} onPress={() => {
+              <Text style={{
+                width: cellWidth,
+                height: cellWidth,
+                backgroundColor: data.item,
+                marginRight: margin / 2.0,
+                marginLeft: margin / 2.0,
+              }} onPress={() => {
                 onSelectColor(data.item);
               }}> </Text>
             </View>;
           }}
           style={{ flexWrap: "wrap", backgroundColor: "#eeeeee" }}
-          keyExtractor={(item,index) => {
+          keyExtractor={(item, index) => {
             return "" + index;
           }}
-          ItemSeparatorComponent={() => <View style={{ backgroundColor: "transparent", height: margin }}/>}
-          contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center",justifyContent:"flex-start" }}
+          ItemSeparatorComponent={() => <View style={{ backgroundColor: "transparent", height: margin }} />}
+          contentContainerStyle={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
         />
@@ -342,19 +400,18 @@ class ColorsView extends React.Component {
 }
 
 
-
 class WidthView extends React.Component {
 
   constructor(props) {
     super(props);
-    this.minWidth = 1
-    this.maxWidth = 50
+    this.minWidth = 1;
+    this.maxWidth = 50;
 
   }
 
 
   render() {
-    const { visiable, onSelectColor ,currentWidth,onDismissStrokeWidth} = this.props;
+    const { visiable, onSelectColor, currentWidth, onDismissStrokeWidth } = this.props;
 
     return <Modal style={{ flex: 1 }}
                   transparent={true}
@@ -365,21 +422,21 @@ class WidthView extends React.Component {
                     console.log("关闭弹框");
                   }}
     >
-      <SafeAreaView style={{ flex: 1 ,flexDirection:"column-reverse",alignItems:"center"}}>
+      <SafeAreaView style={{ flex: 1, flexDirection: "column-reverse", alignItems: "center" }}>
         <TouchableWithoutFeedback onPress={() => {
-          onDismissStrokeWidth()
+          onDismissStrokeWidth();
         }}>
           <View style={{ position: "absolute", width, height, top: 0, left: 0, backgroundColor: "transparent" }} />
         </TouchableWithoutFeedback>
         <Slider
-          style={{width:width-50,marginBottom:100}}
+          style={{ width: width - 50, marginBottom: 100 }}
           minimumValue={this.minWidth}
           maximumValue={this.maxWidth}
           step={1}
           value={currentWidth}
-          onValueChange={(value)=>{
-            console.log(value)
-            onSelectColor(value)
+          onValueChange={(value) => {
+            console.log(value);
+            onSelectColor(value);
           }}
         />
       </SafeAreaView>
